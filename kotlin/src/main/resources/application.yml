@@ -27,5 +27,7 @@ spring:
           time_zone: Asia/Ho_Chi_Minh
     mapping-resources:
       sql/user-sql.xml
+  mvc:
+    throw-exception-if-no-handler-found: true
 jwt:
   secret: hiep

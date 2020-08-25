@@ -13,6 +13,7 @@ class JwtToken(
         private val secret: String
 ) {
     fun doGenerateToken(subject: String): String {
+        println(secret)
         return Jwts
                 .builder()
                 .setSubject(subject)

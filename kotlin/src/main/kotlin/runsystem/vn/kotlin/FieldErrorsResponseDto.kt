@@ -4,5 +4,6 @@ data class FieldErrorsResponseDto(
         var result: String,
         var code: String,
         var message: String,
-        var fieldErrors: List<FieldErrors>) : ResponseBaseDto(result, code, message) {
+        var timestamp : Long,
+        var fieldErrors: List<FieldErrors>) : ResponseBaseDto(result, code, message, timestamp = 1L) {
 }

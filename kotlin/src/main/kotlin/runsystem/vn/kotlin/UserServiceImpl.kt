@@ -5,6 +5,7 @@ import org.mapstruct.factory.Mappers
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.lang.Exception
+import java.sql.Timestamp
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
@@ -28,7 +29,7 @@ class UserServiceImpl(private val userRepository: UserRepository,
         val res = userRepository.findById(id)
         val mapper = Mappers.getMapper(UserMapper::class.java)
 
-        if (!res.isEmpty) {
+        if (res.isPresent) {
             return mapper.toDto(res.get())
         }
         return null

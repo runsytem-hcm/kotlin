@@ -7,7 +7,8 @@ data class UserResponseDto(
         var result: String,
         var code: String,
         var message: String,
-        var user: Any): ResponseBaseDto(result, code, message)
+        var timestamp: Long,
+        var user: Any): ResponseBaseDto(result, code, message, timestamp = 1L)
 {
-    constructor(): this(result = "", code = "", message = "", user = "")
+    constructor(): this(result = "", code = "", message = "", timestamp = 1L, user = "")
 }
