@@ -14,10 +14,12 @@ import java.util.*
 import java.util.stream.Collectors
 
 @ControllerAdvice
-class ExceptionTranslator(private var messageSource: ReloadableResourceBundleMessageSource): ResponseEntityExceptionHandler(){
+class ExceptionTranslator(private var messageSource: ReloadableResourceBundleMessageSource) : ResponseEntityExceptionHandler() {
 
     @ExceptionHandler(value = [Exception::class])
-    fun handleProcessException(ex: Exception,request: WebRequest): ResponseEntity<ResponseExceptionDto> {
+    fun handleProcessException(
+            ex: Exception,
+            request: WebRequest): ResponseEntity<ResponseExceptionDto> {
         val lang = request.getHeader("Accept-Language").toString()
         println("${ex.printStackTrace()}")
         val msg = Utils().getMessage("hello", lang, arrayOf("12", "33"), messageSource)
@@ -31,9 +33,8 @@ class ExceptionTranslator(private var messageSource: ReloadableResourceBundleMes
             request: WebRequest): ResponseEntity<Any> {
 
         val fieldErrors = ex.bindingResult.fieldErrors.stream()
-                .map { f -> FieldErrors(f.field, f.defaultMessage.toString())}
+                .map { f -> FieldErrors(f.field, f.defaultMessage.toString()) }
                 .collect(Collectors.toList())
-        val res = FieldErrorsResponseDto(result = "NG", code = "11111", message = "", fieldErrors = fieldErrors)
-        return ResponseEntity(res, status)
+        return ResponseEntity(FieldErrorsResponseDto(result = "NG", code = "11111", message = "", fieldErrors = fieldErrors), status)
     }
 }

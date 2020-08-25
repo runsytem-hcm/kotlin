@@ -11,11 +11,13 @@ import kotlin.concurrent.thread
 @RestController
 @RequestMapping("/api/v1")
 class UserController(
-        private var userService: UserService,
-        private var messageSource: ReloadableResourceBundleMessageSource
+        private val userService: UserService,
+        private val messageSource: ReloadableResourceBundleMessageSource,
+        private val jwtToken: JwtToken
 ) {
     @GetMapping("/list")
     fun getAll(): ResponseEntity<Any> {
+        println(jwtToken.doGenerateToken("Hiep"))
         val res = userService.getAllUser()
         val msg = Utils().getMessage("hello", "ja", arrayOf("12", "33"), messageSource)
         //UserResponseDto(result = "OK", code = "9999", message = msg, user = res)

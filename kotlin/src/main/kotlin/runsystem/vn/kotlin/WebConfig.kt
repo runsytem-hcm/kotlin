@@ -8,18 +8,13 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
-import org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver
-import org.springframework.web.servlet.i18n.LocaleChangeInterceptor
 import java.nio.charset.StandardCharsets
-import java.util.*
-import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
 import javax.validation.Validator
 
 
 @Configuration
 class WebConfig(
-        private val logInterceptor: LogInterceptor): WebMvcConfigurer {
+        private val logInterceptor: LogInterceptor) : WebMvcConfigurer {
 
     override fun addInterceptors(registry: InterceptorRegistry) {
         registry.addInterceptor(logInterceptor)

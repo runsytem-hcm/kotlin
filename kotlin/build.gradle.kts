@@ -39,10 +39,12 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-hibernate5")
     implementation("org.apache.httpcomponents:httpclient")
+    implementation("org.springframework.boot:spring-boot-starter-security")
 
 	implementation("org.slf4j:slf4j-api")
 	implementation("ch.qos.logback:logback-classic")
 	implementation("ch.qos.logback:logback-core")
+    implementation("io.jsonwebtoken:jjwt:0.9.1")
 
 	runtimeOnly("com.h2database:h2")
 	runtimeOnly("mysql:mysql-connector-java")

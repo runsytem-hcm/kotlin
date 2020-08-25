@@ -27,3 +27,5 @@ spring:
           time_zone: Asia/Ho_Chi_Minh
     mapping-resources:
       sql/user-sql.xml
+jwt:
+  secret: hiep
