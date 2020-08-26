@@ -14,7 +14,7 @@
         </query>
     </named-native-query>
     <sql-result-set-mapping name="getValue">
-        <constructor-result target-class="runsystem.vn.kotlin.UserDataDto">
+        <constructor-result target-class="runsystem.vn.kotlin.dto.UserDataDto">
             <column name="userName" />
             <column name="address" />
             <column name="phone" />

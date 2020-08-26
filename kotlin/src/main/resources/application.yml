@@ -32,4 +32,4 @@ spring:
   resources:
     add-mappings: false
 jwt:
-  secret: hiep
+  secret: ZjE1OTcwZGRhOTg1ZTJlZjlmMDIwNTM5ZmI1NGI5NzYyZWNmNTExM2NhYzBmMmI0MzkwOTU1YjY2ZDRkZGIxYjM0MDIzZmJkMzNlMjE2N2UwMTIzYTJmYjlhYWFjYmNiNGIyOWFiYWQ1NjgwYmQzZTM5NTc3NTdmOTFlZDQ2M2M=
