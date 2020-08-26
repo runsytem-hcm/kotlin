@@ -5,15 +5,10 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule
-import org.springframework.boot.web.client.RestTemplateBuilder
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.support.ReloadableResourceBundleMessageSource
-import org.springframework.http.converter.StringHttpMessageConverter
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean
-import org.springframework.web.client.RestTemplate
-import java.nio.charset.StandardCharsets
-import javax.validation.Validator
 
 @Configuration
 class Config {
@@ -24,4 +19,19 @@ class Config {
                     .registerModule(ParameterNamesModule())
                     .registerModule(Jdk8Module())
                     .registerModule(KotlinModule())
+
+    @Bean
+    fun messageResource(): ReloadableResourceBundleMessageSource {
+        val messageSource = ReloadableResourceBundleMessageSource()
+        messageSource.setBasename("classpath:/i18n/messages")
+        messageSource.setDefaultEncoding(Charsets.UTF_8.toString())
+        return messageSource
+    }
+
+    @Bean
+    fun validator(): LocalValidatorFactoryBean {
+        val localValidator = LocalValidatorFactoryBean()
+        localValidator.setValidationMessageSource(messageResource())
+        return localValidator
+    }
 }

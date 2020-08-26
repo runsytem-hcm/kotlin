@@ -1,11 +1,17 @@
 package runsystem.vn.kotlin
 
-import javax.validation.constraints.NotEmpty
+import javax.validation.constraints.NotBlank
+import javax.validation.constraints.NotNull
 
 data class UserRequestDto(
-        @field:NotEmpty(message = "{hello}")
-        val name: String,
-        val address: String,
+
+        @field: NotBlank(message = "{hello}")
+        private val name: String,
+
+        @field: NotBlank(message = "{hello}")
+        private val address: String,
+
+        @field: NotNull(message = "{hello}")
         @MinimumAge(message = "{age}", age1 = 11)
-        val age: Int) {
+        private val age: Int?) {
 }

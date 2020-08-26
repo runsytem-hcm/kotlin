@@ -25,7 +25,6 @@ import java.time.ZonedDateTime
 import java.util.*
 import java.util.stream.Collectors
 
-@EnableWebMvc
 @ControllerAdvice
 class ExceptionTranslator(private var messageSource: ReloadableResourceBundleMessageSource) : ResponseEntityExceptionHandler() {
 
@@ -55,19 +54,32 @@ class ExceptionTranslator(private var messageSource: ReloadableResourceBundleMes
     }
 
     // Exception Header validation
-    override fun handleServletRequestBindingException(ex: ServletRequestBindingException, headers: HttpHeaders, status: HttpStatus, request: WebRequest): ResponseEntity<Any> {
+    override fun handleServletRequestBindingException(
+            ex: ServletRequestBindingException,
+            headers: HttpHeaders,
+            status: HttpStatus,
+            request: WebRequest): ResponseEntity<Any> {
         val timestamp = Timestamp.valueOf(ZonedDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")).toLocalDateTime()).time
         return ResponseEntity(ex.message?.let { ResponseExceptionDto(result = "NG", code = "1111", message = it, timestamp = timestamp) }, status)
     }
 
     // Exception Path Not Found
-    override fun handleNoHandlerFoundException(ex: NoHandlerFoundException, headers: HttpHeaders, status: HttpStatus, request: WebRequest): ResponseEntity<Any> {
+    override fun handleNoHandlerFoundException(
+            ex: NoHandlerFoundException,
+            headers: HttpHeaders,
+            status: HttpStatus,
+            request: WebRequest): ResponseEntity<Any> {
         val timestamp = Timestamp.valueOf(ZonedDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")).toLocalDateTime()).time
         return ResponseEntity(ex.message?.let { ResponseExceptionDto(result = "NG", code = "1111", message = it, timestamp = timestamp) }, status)
     }
 
     // Exception URL Not Found
-    override fun handleExceptionInternal(ex: Exception, body: Any?, headers: HttpHeaders, status: HttpStatus, request: WebRequest): ResponseEntity<Any> {
+    override fun handleExceptionInternal(
+            ex: Exception,
+            body: Any?,
+            headers: HttpHeaders,
+            status: HttpStatus,
+            request: WebRequest): ResponseEntity<Any> {
         val timestamp = Timestamp.valueOf(ZonedDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")).toLocalDateTime()).time
         return ResponseEntity(ex.message?.let { ResponseExceptionDto(result = "NG", code = "1111", message = it, timestamp = timestamp) }, status)
     }

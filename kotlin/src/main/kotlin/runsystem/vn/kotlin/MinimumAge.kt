@@ -11,7 +11,7 @@ import kotlin.reflect.KClass
 @MustBeDocumented
 annotation class MinimumAge(
         val message: String = "Please, insert an age above 13 years old",
-        val age1: Int = 0,
         val groups: Array<KClass<Any>> = [],
-        val payload: Array<KClass<Payload>> = []
+        val payload: Array<KClass<Payload>> = [],
+        val age1: Int = 0
 )

@@ -32,7 +32,7 @@ class UserController(
     }
 
     @GetMapping("/{id}")
-    fun getUser(@PathVariable id: Long, @RequestHeader("Accept-Language") lang: String): ResponseEntity<Any> {
+    fun getUser(@PathVariable id: Long, @RequestHeader("Accept-Language", required = true) lang: String): ResponseEntity<Any> {
         val res = userService.getUser(id)
         val msg = messageSource.getMessage("hello", arrayOf("aaa", "babb"), Locale(lang))
         if (res != null) {

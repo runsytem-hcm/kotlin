@@ -10,7 +10,7 @@ import java.time.ZonedDateTime
 import java.util.*
 
 
-public class Utils {
+class Utils {
 
     public fun getMessage(code: String, language: String, array: kotlin.Array<String>, messageSource: ReloadableResourceBundleMessageSource): String {
         return messageSource.getMessage(code, array, Locale(language))

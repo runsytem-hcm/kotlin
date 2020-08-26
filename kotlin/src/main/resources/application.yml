@@ -29,5 +29,7 @@ spring:
       sql/user-sql.xml
   mvc:
     throw-exception-if-no-handler-found: true
+  resources:
+    add-mappings: false
 jwt:
   secret: hiep

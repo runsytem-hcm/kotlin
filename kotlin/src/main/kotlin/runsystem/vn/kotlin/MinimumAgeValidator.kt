@@ -4,7 +4,10 @@ import javax.validation.ConstraintValidator
 import javax.validation.ConstraintValidatorContext
 
 class MinimumAgeValidator: ConstraintValidator<MinimumAge, Int> {
-    override fun isValid(value: Int, context: ConstraintValidatorContext?): Boolean {
-        return value > Constants().MINIMUM_AGE
+    override fun isValid(value: Int?, context: ConstraintValidatorContext?): Boolean {
+        if (value != null) {
+            return value > Constants().MINIMUM_AGE
+        }
+        return true
     }
 }
