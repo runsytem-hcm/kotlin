@@ -4,10 +4,12 @@ import org.springframework.context.support.ReloadableResourceBundleMessageSource
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import runsystem.vn.kotlin.common.ResponseUtils
-import runsystem.vn.kotlin.common.Utils
+import runsystem.vn.kotlin.common.utils.ResponseUtils
+import runsystem.vn.kotlin.common.utils.Utils
+import runsystem.vn.kotlin.dto.UserDataDto
 import runsystem.vn.kotlin.dto.request.UserRequestDto
 import runsystem.vn.kotlin.dto.response.UserResponseDto
+import runsystem.vn.kotlin.exception.UserCustomException
 import runsystem.vn.kotlin.security.JwtToken
 import runsystem.vn.kotlin.service.UserService
 import java.util.*
@@ -22,7 +24,12 @@ class UserController(
 ) {
     @GetMapping("/list")
     fun getAll(): ResponseEntity<Any> {
-        println(jwtToken.doGenerateToken("Hiep"))
+        val time = Utils().getCurrentDateTime()
+        println(time)
+        println(Utils().convertDateTimeToString(time, "yyyy-MM-dd HH:mm:ss"))
+        val token = jwtToken.doGenerateToken("Hiep", UserDataDto(userName = "333", address = "fdfsdf", phone = "1213123"))
+        println(token)
+        jwtToken.verifyToken(token)
         val res = userService.getAllUser()
         val msg = Utils().getMessage("hello", "ja", arrayOf("12", "33"), messageSource)
         //UserResponseDto(result = "OK", code = "9999", message = msg, user = res)
@@ -46,6 +53,13 @@ class UserController(
         return ResponseEntity(ResponseUtils().createResponseSuccess(UserResponseDto(), "", msg), HttpStatus.NOT_FOUND)
     }
 
+    /**
+     * Add user
+     *
+     * @param user
+     * @param lang
+     * @return
+     */
     @PostMapping("/add")
     fun addUser(@Valid @RequestBody user: UserRequestDto, @RequestHeader("Accept-Language") lang: String): ResponseEntity<Any> {
         val msg = messageSource.getMessage("hello", arrayOf("aaa", "babb"), Locale(lang))

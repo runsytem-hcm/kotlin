@@ -11,19 +11,16 @@ import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.context.request.WebRequest
 import org.springframework.web.servlet.NoHandlerFoundException
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
-import runsystem.vn.kotlin.common.ResponseUtils
+import runsystem.vn.kotlin.common.utils.ResponseUtils
 import runsystem.vn.kotlin.dto.FieldErrors
 import runsystem.vn.kotlin.dto.response.FieldErrorsResponseDto
 import runsystem.vn.kotlin.dto.response.ResponseExceptionDto
-import runsystem.vn.kotlin.common.Utils
+import runsystem.vn.kotlin.common.utils.Utils
 import java.lang.Exception
-import java.sql.Timestamp
-import java.time.ZoneId
-import java.time.ZonedDateTime
 import java.util.stream.Collectors
 
 @ControllerAdvice
-class ExceptionTranslator(private var messageSource: ReloadableResourceBundleMessageSource) : ResponseEntityExceptionHandler() {
+class ExceptionTranslator(private val messageSource: ReloadableResourceBundleMessageSource) : ResponseEntityExceptionHandler() {
 
     @ExceptionHandler(value = [Exception::class])
     fun handleProcessException(
@@ -32,7 +29,17 @@ class ExceptionTranslator(private var messageSource: ReloadableResourceBundleMes
         val lang = request.getHeader("Accept-Language").toString()
         println("${ex.printStackTrace()}")
         val msg = Utils().getMessage("hello", lang, arrayOf("12", "33"), messageSource)
-        return ResponseEntity(ResponseUtils().createResponseError(ResponseExceptionDto(), msg, null), HttpStatus.INTERNAL_SERVER_ERROR)
+        return ResponseEntity(ResponseUtils().createResponseError(ResponseExceptionDto(), msg, "1111", null), HttpStatus.INTERNAL_SERVER_ERROR)
+    }
+
+    @ExceptionHandler(value = [UserCustomException::class])
+    fun handleProcessCustomException(
+            ex: UserCustomException,
+            request: WebRequest): ResponseEntity<Any> {
+        println("${ex.printStackTrace()}")
+        val lang = request.getHeader("Accept-Language").toString()
+        val msg = Utils().getMessage(ex.message, lang, arrayOf("12", "33"), messageSource)
+        return ResponseEntity(ResponseUtils().createResponseError(ResponseExceptionDto(), msg, ex.errorCode, null), ex.status)
     }
 
     // Validation param
@@ -45,7 +52,7 @@ class ExceptionTranslator(private var messageSource: ReloadableResourceBundleMes
         val fieldErrors = ex.bindingResult.fieldErrors.stream()
                 .map { f -> FieldErrors(f.field, f.defaultMessage.toString()) }
                 .collect(Collectors.toList())
-        return ResponseEntity(ResponseUtils().createResponseError(FieldErrorsResponseDto(), "", fieldErrors), status)
+        return ResponseEntity(ResponseUtils().createResponseError(FieldErrorsResponseDto(), "","2222", fieldErrors), status)
     }
 
     // Exception Header validation
@@ -54,7 +61,7 @@ class ExceptionTranslator(private var messageSource: ReloadableResourceBundleMes
             headers: HttpHeaders,
             status: HttpStatus,
             request: WebRequest): ResponseEntity<Any> {
-        return ResponseEntity(ex.message?.let { ResponseUtils().createResponseError(ResponseExceptionDto(), it, null) }, status)
+        return ResponseEntity(ex.message?.let { ResponseUtils().createResponseError(ResponseExceptionDto(), it,"3333", null) }, status)
     }
 
     // Exception Path Not Found
@@ -63,7 +70,7 @@ class ExceptionTranslator(private var messageSource: ReloadableResourceBundleMes
             headers: HttpHeaders,
             status: HttpStatus,
             request: WebRequest): ResponseEntity<Any> {
-        return ResponseEntity(ex.message?.let { ResponseUtils().createResponseError(ResponseExceptionDto(), it, null) }, status)
+        return ResponseEntity(ex.message?.let { ResponseUtils().createResponseError(ResponseExceptionDto(), it,"4444", null) }, status)
     }
 
     // Exception URL Not Found
@@ -73,6 +80,6 @@ class ExceptionTranslator(private var messageSource: ReloadableResourceBundleMes
             headers: HttpHeaders,
             status: HttpStatus,
             request: WebRequest): ResponseEntity<Any> {
-        return ResponseEntity(ex.message?.let { ResponseUtils().createResponseError(ResponseExceptionDto(), it, null) }, status)
+        return ResponseEntity(ex.message?.let { ResponseUtils().createResponseError(ResponseExceptionDto(), it,"7777", null) }, status)
     }
 }

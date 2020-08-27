@@ -3,7 +3,7 @@ package runsystem.vn.kotlin.service.impl
 import org.mapstruct.factory.Mappers
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import runsystem.vn.kotlin.common.Constants
+import runsystem.vn.kotlin.common.constants.CommonConstants
 import runsystem.vn.kotlin.config.RestTemplateClient
 import runsystem.vn.kotlin.dto.UserDataDto
 import runsystem.vn.kotlin.dto.UserDto
@@ -44,7 +44,7 @@ class UserServiceImpl(private val userRepository: UserRepository,
 
     @Transactional(rollbackFor = [Exception::class])
     override fun addUser(user: UserRequestDto): UserEntity {
-        val zonedToday = ZonedDateTime.now(ZoneId.of(Constants().CONST_TIME_ZONE))
+        val zonedToday = ZonedDateTime.now(ZoneId.of(CommonConstants().CONST_TIME_ZONE))
         val mapper = Mappers.getMapper(UserMapper::class.java)
         val entity = mapper.toEntity(user)
         entity.date = zonedToday.toLocalDateTime()

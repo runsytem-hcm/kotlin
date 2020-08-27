@@ -1,6 +1,7 @@
 package runsystem.vn.kotlin.service
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import java.util.*
@@ -10,7 +11,7 @@ import javax.servlet.http.HttpServletResponse
 
 @Component
 class LoggingService(
-       private val LOG: org.slf4j.Logger = LoggerFactory.getLogger(LoggingService::class.java)
+       private val LOG: Logger = LoggerFactory.getLogger(LoggingService::class.java)
 ) {
     fun logRequest(httpServletRequest: HttpServletRequest, body: Any?) {
         try {
@@ -45,7 +46,7 @@ class LoggingService(
             stringBuilder.append("responseHeaders=[").append(buildHeadersMap(httpServletResponse)).append("] ")
             stringBuilder.append("responseBody=[").append(mapper.writeValueAsString(body).toString()).append("] ")
             LOG.info("{}", stringBuilder)
-        } catch (e: java.lang.Exception) {
+        } catch (e: Exception) {
             LOG.error(e.message)
         }
     }
