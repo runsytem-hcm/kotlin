@@ -29,7 +29,7 @@ class UserController(
         println(Utils().convertDateTimeToString(time, "yyyy-MM-dd HH:mm:ss"))
         val token = jwtToken.doGenerateToken("Hiep", UserDataDto(userName = "333", address = "fdfsdf", phone = "1213123"))
         println(token)
-        jwtToken.verifyToken(token)
+        println(jwtToken.verifyToken(token))
         val res = userService.getAllUser()
         val msg = Utils().getMessage("hello", "ja", arrayOf("12", "33"), messageSource)
         //UserResponseDto(result = "OK", code = "9999", message = msg, user = res)

@@ -1,10 +1,8 @@
 package runsystem.vn.kotlin.security
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.util.JSONPObject
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
-import io.jsonwebtoken.security.Keys
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
@@ -14,7 +12,6 @@ import org.springframework.security.core.userdetails.User
 import org.springframework.stereotype.Component
 import runsystem.vn.kotlin.dto.VerifyTokenDto
 import java.nio.charset.StandardCharsets
-import java.security.Key
 import java.security.SignatureException
 import java.util.*
 import io.jsonwebtoken.UnsupportedJwtException
@@ -22,9 +19,7 @@ import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.MalformedJwtException
 import runsystem.vn.kotlin.dto.UserDataDto
 import java.util.stream.Collectors
-import kotlin.collections.LinkedHashMap
 import org.springframework.security.core.authority.SimpleGrantedAuthority
-import org.terracotta.management.model.stats.StatisticRegistry.collect
 import org.springframework.security.core.GrantedAuthority
 
 
@@ -33,38 +28,35 @@ class JwtToken(
         @Value("\${jwt.secret}")
         private val secret: String
 ) {
-
-    companion object {
-        private val LOG: Logger = LoggerFactory.getLogger(JwtToken::class.java)
-    }
-
-
-//    init {
-//        val byte = secret.toByteArray(StandardCharsets.UTF_8)
-//        this.key = Keys.hmacShaKeyFor(byte)
+    private var secretKey: ByteArray = secret.toByteArray(StandardCharsets.UTF_8)
+    private val logger: Logger = LoggerFactory.getLogger(JwtToken::class.java)
+//    companion object {
+//        private val LOG: Logger = LoggerFactory.getLogger(JwtToken::class.java)
 //    }
 
     fun doGenerateToken(subject: String, user: Any): String {
         return Jwts
                 .builder()
                 .setSubject(subject)
-                .signWith(SignatureAlgorithm.HS512, secret.toByteArray(StandardCharsets.UTF_8))
-                .setExpiration(Date(System.currentTimeMillis() + 86400000))
+                .signWith(SignatureAlgorithm.HS512, secretKey)
+                .setExpiration(Date(System.currentTimeMillis()))
                 .claim("user", user)
                 .compact()
     }
 
-    fun getAuthentication(tokenDto: VerifyTokenDto): Authentication{
+    fun getAuthentication(jwtToken: String, tokenDto: VerifyTokenDto): Authentication{
         val authorities = tokenDto.authorities.stream().map(::SimpleGrantedAuthority).collect(Collectors.toList<GrantedAuthority>())
 
+//        val authorities = tokenDto.authorities.stream().map { authority -> SimpleGrantedAuthority(authority) }.collect(Collectors.toList<GrantedAuthority>())
+
         val principal = User(tokenDto.userName, "", authorities)
-        return UsernamePasswordAuthenticationToken(principal, tokenDto, authorities)
+        return UsernamePasswordAuthenticationToken(principal, jwtToken, authorities)
     }
 
     fun verifyToken(token: String): VerifyTokenDto {
         val tokenDto = VerifyTokenDto()
         if(validateToken(token)){
-            val claims = Jwts.parser().setSigningKey(secret.toByteArray(StandardCharsets.UTF_8)).parseClaimsJws(token).body
+            val claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).body
             tokenDto.userName = claims.subject
             val user = claims["user"]
             val mapper = ObjectMapper()
@@ -79,18 +71,18 @@ class JwtToken(
 
     private fun validateToken(token: String): Boolean {
         try {
-            Jwts.parser().setSigningKey(secret.toByteArray(StandardCharsets.UTF_8)).parseClaimsJws(token)
+            Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token)
             return true
         } catch (ex: SignatureException) {
-            LOG.error("Invalid JWT Signature: {}", ex)
+            logger.error("Invalid JWT Signature: {0}", ex)
         } catch (ex: MalformedJwtException) {
-            LOG.error("Invalid JWT token: {}", ex)
+            logger.error("Invalid JWT token: {}", ex)
         } catch (ex: ExpiredJwtException) {
-            LOG.error("Expired JWT token: {}", ex)
+            logger.error("Expired JWT token: {}", ex)
         } catch (ex: UnsupportedJwtException) {
-            LOG.error("Unsupported JWT exception: {}", ex)
+            logger.error("Unsupported JWT exception: {}", ex)
         } catch (ex: IllegalArgumentException) {
-            LOG.error("Jwt claims string is empty: {}", ex)
+            logger.error("Jwt claims string is empty: {}", ex)
         }
         return false
     }

@@ -1,7 +1,7 @@
 logging:
   level:
-    ROOT: INFO
-    runsytem.vn.kotlin: INFO
+    ROOT: ERROR
+    runsytem.vn.kotlin: ERROR
   file:
     path: log
 
