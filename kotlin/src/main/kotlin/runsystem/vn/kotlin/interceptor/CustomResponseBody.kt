@@ -12,7 +12,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice
 import runsystem.vn.kotlin.service.LoggingService
 
 @ControllerAdvice
-class CustomResponseBody(val loggingService: LoggingService) : ResponseBodyAdvice<Any> {
+class CustomResponseBody(private val loggingService: LoggingService) : ResponseBodyAdvice<Any> {
     override fun supports(returnType: MethodParameter, converterType: Class<out HttpMessageConverter<*>>): Boolean {
         return true
     }

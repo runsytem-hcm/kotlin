@@ -11,8 +11,8 @@ import javax.servlet.http.HttpServletRequest
 
 @ControllerAdvice
 class CustomRequestBody(
-        val httpServletRequest: HttpServletRequest,
-        val loggingService: LoggingService) : RequestBodyAdviceAdapter() {
+        private val httpServletRequest: HttpServletRequest,
+        private val loggingService: LoggingService) : RequestBodyAdviceAdapter() {
 
     override fun supports(methodParameter: MethodParameter, targetType: Type,
                           converterType: Class<out HttpMessageConverter<*>>): Boolean {

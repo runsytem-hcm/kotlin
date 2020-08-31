@@ -6,6 +6,7 @@ import io.jsonwebtoken.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.http.HttpStatus
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.userdetails.User
@@ -14,13 +15,12 @@ import runsystem.vn.kotlin.dto.VerifyTokenDto
 import java.nio.charset.StandardCharsets
 import java.security.SignatureException
 import java.util.*
-import io.jsonwebtoken.security.Keys
 import runsystem.vn.kotlin.dto.UserDataDto
 import java.util.stream.Collectors
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.util.StringUtils
-import java.security.Key
+import runsystem.vn.kotlin.exception.UserCustomException
 import javax.servlet.http.HttpServletRequest
 
 
@@ -31,7 +31,7 @@ class JwtToken(
 ) {
     private var secretKey: ByteArray = secret.toByteArray(StandardCharsets.UTF_8)
     private val logger: Logger = LoggerFactory.getLogger(JwtToken::class.java)
-    private val key: Key = Keys.hmacShaKeyFor(secret.toByteArray())
+    
     fun doGenerateToken(subject: String, user: Any): String {
         return Jwts
                 .builder()
