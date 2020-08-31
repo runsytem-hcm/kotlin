@@ -17,9 +17,11 @@ class CustomResponseBody(val loggingService: LoggingService) : ResponseBodyAdvic
         return true
     }
 
-    override fun beforeBodyWrite(body: Any?, returnType: MethodParameter, selectedContentType: MediaType, selectedConverterType: Class<out HttpMessageConverter<*>>, request: ServerHttpRequest, response: ServerHttpResponse): Any? {
-        if(request is ServletServerHttpRequest && response is ServletServerHttpResponse){
-            loggingService.logResponse(request.servletRequest, response.servletResponse, body )
+    override fun beforeBodyWrite(body: Any?, returnType: MethodParameter, selectedContentType: MediaType,
+                                 selectedConverterType: Class<out HttpMessageConverter<*>>, request: ServerHttpRequest,
+                                 response: ServerHttpResponse): Any? {
+        if (request is ServletServerHttpRequest && response is ServletServerHttpResponse) {
+            loggingService.logResponse(request.servletRequest, response.servletResponse, body)
         }
         return body
     }

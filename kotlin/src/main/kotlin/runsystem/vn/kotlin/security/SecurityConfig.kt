@@ -7,6 +7,9 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.web.AuthenticationEntryPoint
+import org.springframework.security.web.access.AccessDeniedHandler
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
+import runsystem.vn.kotlin.fillter.JWTFilter
 import runsystem.vn.kotlin.security.CustomAuthenticationEntryPoint
 
 
@@ -14,24 +17,24 @@ import runsystem.vn.kotlin.security.CustomAuthenticationEntryPoint
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true)
 class SecurityConfig(
-//        private val filter: JWTFilter
+        private val filter: JWTFilter
 ) : WebSecurityConfigurerAdapter() {
 
     override fun configure(http: HttpSecurity) {
         http
                 .cors()
                 .and()
-                    .csrf()
-                    .disable()
-                    .authorizeRequests()
-                    .antMatchers("/**").permitAll()
-                .and().exceptionHandling().authenticationEntryPoint(authenticationEntryPoint())
-//                .and()
-//                    .addFilterBefore(filter, UsernamePasswordAuthenticationFilter::class.java)
+                .csrf()
+                .disable()
+                .addFilterBefore(filter, UsernamePasswordAuthenticationFilter::class.java)
+                .exceptionHandling().accessDeniedHandler(authenticationEntryPoint())
+                .and()
+                .authorizeRequests()
+                .antMatchers("/api/v1/list").hasAuthority("list")
     }
 
     @Bean
-    fun authenticationEntryPoint(): AuthenticationEntryPoint {
+    fun authenticationEntryPoint(): AccessDeniedHandler {
         return CustomAuthenticationEntryPoint()
     }
 }

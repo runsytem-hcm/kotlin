@@ -22,12 +22,21 @@ class UserController(
         private val messageSource: ReloadableResourceBundleMessageSource,
         private val jwtToken: JwtToken
 ) {
+
+    @GetMapping("/authenticate")
+    fun authenticate(): ResponseEntity<Any> {
+        val token = jwtToken.doGenerateToken("Hiep", UserDataDto(userName = "333", address = "fdfsdf", phone = "1213123", authorities = listOf("list")))
+        val msg = Utils().getMessage("hello", "ja", arrayOf("12", "33"), messageSource)
+        return ResponseEntity(ResponseUtils().createResponseSuccess(UserResponseDto(), token, msg), HttpStatus.OK)
+    }
+
+
     @GetMapping("/list")
     fun getAll(): ResponseEntity<Any> {
         val time = Utils().getCurrentDateTime()
         println(time)
         println(Utils().convertDateTimeToString(time, "yyyy-MM-dd HH:mm:ss"))
-        val token = jwtToken.doGenerateToken("Hiep", UserDataDto(userName = "333", address = "fdfsdf", phone = "1213123"))
+        val token = jwtToken.doGenerateToken("Hiep", UserDataDto(userName = "333", address = "fdfsdf", phone = "1213123", authorities = listOf("list")))
         println(token)
         println(jwtToken.verifyToken(token))
         val res = userService.getAllUser()

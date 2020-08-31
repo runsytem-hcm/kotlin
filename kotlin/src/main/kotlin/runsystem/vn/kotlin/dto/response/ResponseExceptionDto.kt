@@ -7,5 +7,5 @@ data class ResponseExceptionDto(
         var code: String,
         var message: String,
         var timestamp: Long) : ResponseBaseDto(result, code, message, timestamp = 1L) {
-    constructor(): this(result = "", code = "", message = "", timestamp = 0L)
+    constructor() : this(result = "", code = "", message = "", timestamp = 0L)
 }

@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse
 
 @Component
 class LoggingService(
-       private val LOG: Logger = LoggerFactory.getLogger(LoggingService::class.java)
+        private val LOG: Logger = LoggerFactory.getLogger(LoggingService::class.java)
 ) {
     fun logRequest(httpServletRequest: HttpServletRequest, body: Any?) {
         try {

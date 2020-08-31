@@ -13,6 +13,6 @@ import java.util.*
 class KotlinApplication
 
 fun main(args: Array<String>) {
-	runApplication<KotlinApplication>(*args)
-	TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of("Asia/Ho_Chi_Minh")))
+    runApplication<KotlinApplication>(*args)
+    TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of("Asia/Ho_Chi_Minh")))
 }

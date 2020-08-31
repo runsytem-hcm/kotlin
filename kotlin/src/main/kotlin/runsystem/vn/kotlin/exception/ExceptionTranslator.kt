@@ -20,7 +20,8 @@ import java.lang.Exception
 import java.util.stream.Collectors
 
 @ControllerAdvice
-class ExceptionTranslator(private val messageSource: ReloadableResourceBundleMessageSource) : ResponseEntityExceptionHandler() {
+class ExceptionTranslator(
+        private val messageSource: ReloadableResourceBundleMessageSource) : ResponseEntityExceptionHandler() {
 
     @ExceptionHandler(value = [Exception::class])
     fun handleProcessException(
@@ -52,7 +53,7 @@ class ExceptionTranslator(private val messageSource: ReloadableResourceBundleMes
         val fieldErrors = ex.bindingResult.fieldErrors.stream()
                 .map { f -> FieldErrors(f.field, f.defaultMessage.toString()) }
                 .collect(Collectors.toList())
-        return ResponseEntity(ResponseUtils().createResponseError(FieldErrorsResponseDto(), "","2222", fieldErrors), status)
+        return ResponseEntity(ResponseUtils().createResponseError(FieldErrorsResponseDto(), "", "2222", fieldErrors), status)
     }
 
     // Exception Header validation
@@ -61,7 +62,7 @@ class ExceptionTranslator(private val messageSource: ReloadableResourceBundleMes
             headers: HttpHeaders,
             status: HttpStatus,
             request: WebRequest): ResponseEntity<Any> {
-        return ResponseEntity(ex.message?.let { ResponseUtils().createResponseError(ResponseExceptionDto(), it,"3333", null) }, status)
+        return ResponseEntity(ex.message?.let { ResponseUtils().createResponseError(ResponseExceptionDto(), it, "3333", null) }, status)
     }
 
     // Exception Path Not Found
@@ -70,7 +71,7 @@ class ExceptionTranslator(private val messageSource: ReloadableResourceBundleMes
             headers: HttpHeaders,
             status: HttpStatus,
             request: WebRequest): ResponseEntity<Any> {
-        return ResponseEntity(ex.message?.let { ResponseUtils().createResponseError(ResponseExceptionDto(), it,"4444", null) }, status)
+        return ResponseEntity(ex.message?.let { ResponseUtils().createResponseError(ResponseExceptionDto(), it, "4444", null) }, status)
     }
 
     // Exception URL Not Found
@@ -80,6 +81,6 @@ class ExceptionTranslator(private val messageSource: ReloadableResourceBundleMes
             headers: HttpHeaders,
             status: HttpStatus,
             request: WebRequest): ResponseEntity<Any> {
-        return ResponseEntity(ex.message?.let { ResponseUtils().createResponseError(ResponseExceptionDto(), it,"7777", null) }, status)
+        return ResponseEntity(ex.message?.let { ResponseUtils().createResponseError(ResponseExceptionDto(), it, "7777", null) }, status)
     }
 }

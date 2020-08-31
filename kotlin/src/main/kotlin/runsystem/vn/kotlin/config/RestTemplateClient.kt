@@ -1,7 +1,6 @@
 package runsystem.vn.kotlin.config
 
 
-
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -17,7 +16,7 @@ class RestTemplateClient(private val restTemplate: RestTemplate) {
 
     private val logger: Logger = LoggerFactory.getLogger(RestTemplateClient::class.java)
 
-    fun <T> postBody(params: Map<String, String>, url: String, t: Class<T>) : T? {
+    fun <T> postBody(params: Map<String, String>, url: String, t: Class<T>): T? {
         logger.info("request URL===========:{}", url)
         logger.info("Request parameters===========:{}", params)
         val httpHeaders = HttpHeaders()

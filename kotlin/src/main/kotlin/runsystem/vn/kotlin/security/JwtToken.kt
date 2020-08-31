@@ -1,8 +1,8 @@
 package runsystem.vn.kotlin.security
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import io.jsonwebtoken.Jwts
-import io.jsonwebtoken.SignatureAlgorithm
+import io.jsonwebtoken.*
+
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
@@ -14,13 +14,14 @@ import runsystem.vn.kotlin.dto.VerifyTokenDto
 import java.nio.charset.StandardCharsets
 import java.security.SignatureException
 import java.util.*
-import io.jsonwebtoken.UnsupportedJwtException
-import io.jsonwebtoken.ExpiredJwtException
-import io.jsonwebtoken.MalformedJwtException
+import io.jsonwebtoken.security.Keys
 import runsystem.vn.kotlin.dto.UserDataDto
 import java.util.stream.Collectors
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.GrantedAuthority
+import org.springframework.util.StringUtils
+import java.security.Key
+import javax.servlet.http.HttpServletRequest
 
 
 @Component
@@ -30,51 +31,45 @@ class JwtToken(
 ) {
     private var secretKey: ByteArray = secret.toByteArray(StandardCharsets.UTF_8)
     private val logger: Logger = LoggerFactory.getLogger(JwtToken::class.java)
-//    companion object {
-//        private val LOG: Logger = LoggerFactory.getLogger(JwtToken::class.java)
-//    }
-
+    private val key: Key = Keys.hmacShaKeyFor(secret.toByteArray())
     fun doGenerateToken(subject: String, user: Any): String {
         return Jwts
                 .builder()
                 .setSubject(subject)
                 .signWith(SignatureAlgorithm.HS512, secretKey)
-                .setExpiration(Date(System.currentTimeMillis()))
+                .setExpiration(Date(System.currentTimeMillis() + 84600000))
                 .claim("user", user)
                 .compact()
     }
 
-    fun getAuthentication(jwtToken: String, tokenDto: VerifyTokenDto): Authentication{
-        val authorities = tokenDto.authorities.stream().map(::SimpleGrantedAuthority).collect(Collectors.toList<GrantedAuthority>())
+    fun getAuthentication(jwtToken: String, tokenDto: VerifyTokenDto): Authentication {
+        val authorities = tokenDto.authorities.stream().map(::SimpleGrantedAuthority)
+                .collect(Collectors.toList<GrantedAuthority>())
 
 //        val authorities = tokenDto.authorities.stream().map { authority -> SimpleGrantedAuthority(authority) }.collect(Collectors.toList<GrantedAuthority>())
 
         val principal = User(tokenDto.userName, "", authorities)
-        return UsernamePasswordAuthenticationToken(principal, jwtToken, authorities)
+        return UsernamePasswordAuthenticationToken(principal, null, authorities)
     }
 
-    fun verifyToken(token: String): VerifyTokenDto {
+    fun verifyToken(token: String): VerifyTokenDto? {
         val tokenDto = VerifyTokenDto()
-        if(validateToken(token)){
+        if (validateToken(token)) {
             val claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).body
+            val data = ObjectMapper().readValue<UserDataDto>(ObjectMapper().writeValueAsString(claims["user"]), UserDataDto::class.java)
             tokenDto.userName = claims.subject
-            val user = claims["user"]
-            val mapper = ObjectMapper()
-            val data = mapper.readValue<UserDataDto>(ObjectMapper().writeValueAsString(user), UserDataDto::class.java)
-            val list: List<String> = listOf()
-            tokenDto.authorities = list.plus(data.address)
+            tokenDto.authorities = data.authorities
+            return tokenDto
         }
-
-        return tokenDto
+        return null
     }
-
 
     private fun validateToken(token: String): Boolean {
         try {
             Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token)
             return true
         } catch (ex: SignatureException) {
-            logger.error("Invalid JWT Signature: {0}", ex)
+            logger.error("Invalid JWT Signature: {}", ex)
         } catch (ex: MalformedJwtException) {
             logger.error("Invalid JWT token: {}", ex)
         } catch (ex: ExpiredJwtException) {
@@ -85,5 +80,13 @@ class JwtToken(
             logger.error("Jwt claims string is empty: {}", ex)
         }
         return false
+    }
+
+    fun parseJwt(request: HttpServletRequest): String? {
+        val headerAuth = request.getHeader("Authorization")
+        if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
+            return headerAuth.substring(7, headerAuth.length)
+        }
+        return null
     }
 }

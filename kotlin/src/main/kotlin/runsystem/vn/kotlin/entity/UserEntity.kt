@@ -6,7 +6,7 @@ import java.time.LocalDateTime
 import javax.persistence.*
 
 @Entity
-@Table(name="user")
+@Table(name = "user")
 data class UserEntity(
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -14,6 +14,6 @@ data class UserEntity(
         var name: String,
         var address: String,
         var date: LocalDateTime?
-){
-        constructor(): this(null,"","", date = null)
+) {
+    constructor() : this(null, "", "", date = null)
 }

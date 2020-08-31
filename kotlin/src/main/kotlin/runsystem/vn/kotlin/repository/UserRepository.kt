@@ -8,7 +8,7 @@ import runsystem.vn.kotlin.dto.UserDataDto
 import runsystem.vn.kotlin.entity.UserEntity
 
 @Repository
-interface UserRepository: JpaRepository<UserEntity, Long> {
+interface UserRepository : JpaRepository<UserEntity, Long> {
 
     @Query(name = "getName", nativeQuery = true)
     fun getName(@Param("name") name: String): List<UserDataDto>

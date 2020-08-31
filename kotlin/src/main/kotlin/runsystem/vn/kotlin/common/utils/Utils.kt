@@ -27,7 +27,8 @@ class Utils {
      * @param messageSource
      * @return
      */
-    public fun getMessage(code: String, language: String, array: kotlin.Array<String>, messageSource: ReloadableResourceBundleMessageSource): String {
+    public fun getMessage(code: String, language: String, array: kotlin.Array<String>,
+                          messageSource: ReloadableResourceBundleMessageSource): String {
         return messageSource.getMessage(code, array, Locale(language))
     }
 
